@@ -23,6 +23,4 @@ public interface ICommentService {
     Map<String, Object> stuRemark(String token,String id,Integer grade);
 
 
-
-
 }
