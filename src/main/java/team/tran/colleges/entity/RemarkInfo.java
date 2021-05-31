@@ -13,7 +13,7 @@ public class RemarkInfo {
     //点评信息id
     private String remarkInfoId;
     // 点评等级
-    private String remarkInfoMsg;
+    private Integer remarkInfoMsg;
     // 学生id
     private String sid;
     // 课程id

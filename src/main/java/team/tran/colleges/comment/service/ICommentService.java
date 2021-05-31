@@ -1,4 +1,4 @@
-package team.tran.colleges.course.service;
+package team.tran.colleges.comment.service;
 
 import java.util.Map;
 
@@ -21,7 +21,6 @@ public interface ICommentService {
      * @date: 2021/5/31
      */
     Map<String, Object> stuRemark(String token,String id,Integer grade);
-
 
 
 
