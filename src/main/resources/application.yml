@@ -22,3 +22,8 @@ spring:
   data:
     mongodb:
       uri: "mongodb://localhost:27017/mongodb001"
+
+mybatis-plus:
+  configuration:
+    # 关闭驼峰命名规则
+    map-underscore-to-camel-case: false
