@@ -79,7 +79,7 @@ public class SuggestServiceImpl implements ISuggestService {
      * @param token 教师的token
      * @param con 回复的内容
      * @param id   学生的id
-     * @param sid   课程的id
+     * @param sid   建议的id
      * @return Map
      */
     @Override

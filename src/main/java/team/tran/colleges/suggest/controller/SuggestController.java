@@ -41,11 +41,11 @@ public class SuggestController {
      * @param token 教师的token
      * @param con 回复的内容
      * @param id   学生的id
-     * @param sid   课程的id
+     * @param sid   建议的id
      * @return Map
      */
     @RequestMapping("/course/reply")
-    Map<String ,Object> replySuggest(@RequestHeader("token") String token,String con,String id,@RequestHeader("sid")String sid){
+    Map<String ,Object> replySuggest(@RequestHeader("token") String token,String con,String id,String sid){
         return suggestService.replaySuggest(token,con,id,sid);
     }
 
