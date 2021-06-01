@@ -14,6 +14,10 @@ public class Suggest {
     private String suggestId;
     // 学生id
     private String sid;
+    // 教师 id
+    private String tid;
+    // 回复的信息
+    private  String replyMsg;
     // 课程id
     private String coId;
     // 课程建议
