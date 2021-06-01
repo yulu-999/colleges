@@ -26,4 +26,6 @@ public class Suggest {
     private String createTime;
     // 是否删除
     private Integer isDelete;
+    //是否已读
+    private Integer isRead;
 }
