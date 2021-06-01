@@ -1,5 +1,6 @@
 package team.tran.colleges.comment.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -7,10 +8,12 @@ import team.tran.colleges.comment.dao.CommentDao;
 import team.tran.colleges.comment.service.ICommentService;
 
 import team.tran.colleges.entity.RemarkInfo;
+import team.tran.colleges.entity.Suggest;
 import team.tran.colleges.utils.DataUtil;
 import team.tran.colleges.utils.IDUtil;
 import team.tran.colleges.utils.TokenUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -108,13 +111,46 @@ public class CommentServiceImpl implements ICommentService {
 
     }
 
+    /**
+     * @param: token
+     * @param: id
+     * @description: TODO 对点评进行删除 只能删除自己的
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @author: tran
+     * @date: 2021/6/1
+     */
     @Override
     public Map<String, Object> delRemark(String token, String id) {
         return null;
     }
 
+    /**
+     * @param: token 学生的 token
+     * @description: TODO 获取自己所有点评过的信息
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @author: tran
+     * @date: 2021/6/1
+     */
     @Override
-    public Map<String, Object> selectRemark(String token) {
-        return null;
+    public Map<String, Object> selectRemark(String token,Integer page,Integer size) {
+
+        //  验证 token
+        if (token == null || token.equals(""))
+            return DataUtil.printf(-1, "参数为空");
+        String myId = TokenUtils.getToken(token);
+        if (myId == null) {
+            return DataUtil.printf(-1, "请重新登录");
+        }
+        // 页数修改
+        DataUtil.updatePage(page,size);
+        // 查询数据
+        QueryWrapper<RemarkInfo> query = new QueryWrapper<>();
+        HashMap<String, Object> abs = new HashMap<>();
+        query.eq("sid",myId);
+        query.last(" limit " + page+","+size);
+        commentDao.selectList(query);
+        // 返回数据
+        return DataUtil.printf(0,"获取成功",query.last(" limit " + page+","+size));
+
     }
 }

@@ -29,28 +29,20 @@ public final class DataUtil {
      * @date: 2021/5/14
      */
     public static Map<String,Object> printf(Integer code, String msg,Object data){
-        Map<String,Object> map = new HashMap<>();
-        map.put("code",code);
-        map.put("msg",msg);
+        Map<String, Object> map = printf(code, msg);
         map.put("data",data);
         return map;
     }
 
     public static Map<String,Object> printf(Integer code,Long count, String msg,Object data){
-        Map<String,Object> map = new HashMap<>();
-        map.put("code",code);
+        Map<String, Object> map = printf(code, msg, data);
         map.put("count",count);
-        map.put("msg",msg);
-        map.put("data",data);
         return map;
     }
 
     public static Map<String,Object> printf(Integer code,Integer count, String msg,Object data){
-        Map<String,Object> map = new HashMap<>();
-        map.put("code",code);
+        Map<String, Object> map = printf(code, msg, data);
         map.put("count",count);
-        map.put("msg",msg);
-        map.put("data",data);
         return map;
     }
 
@@ -62,11 +54,17 @@ public final class DataUtil {
     }
 
 
-
+    /**
+     * @param: data 时间
+     * @description: TODO 时间转换
+     * @return: java.lang.String
+     * @author: tran
+     * @date: 2021/6/1
+     */
     public static  String dataTime(String data){
         return  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Long.parseLong(data));
-
     }
+
 
 
 
@@ -85,6 +83,7 @@ public final class DataUtil {
             page=1;
         if (size==null)
             size=20;
+        page=(page-1)*size;
     }
 
 }

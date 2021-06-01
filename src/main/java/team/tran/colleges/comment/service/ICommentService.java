@@ -42,7 +42,7 @@ public interface ICommentService {
      * @author: tran
      * @date: 2021/6/1
      */
-    Map<String, Object> selectRemark(String token);
+    Map<String, Object> selectRemark(String token,Integer page,Integer size);
 
 
 }

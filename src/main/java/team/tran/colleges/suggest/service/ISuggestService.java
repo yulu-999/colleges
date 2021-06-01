@@ -39,7 +39,7 @@ public interface ISuggestService {
      * @author: tran
      * @date: 2021/6/1
      */
-    Map<String, Object> getSuggestByState(String token,Integer state);
+    Map<String, Object> getSuggestByState(String token,Integer state,Integer page,Integer size);
 
     /**
      * @param: token 教师 token
@@ -49,7 +49,7 @@ public interface ISuggestService {
      * @author: tran
      * @date: 2021/6/1
      */
-    Map<String, Object> getTeaSuggestByState(String token,Integer state);
+    Map<String, Object> getTeaSuggestByState(String token,Integer state,Integer page,Integer size);
 
 
 }

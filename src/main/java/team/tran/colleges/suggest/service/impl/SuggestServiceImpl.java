@@ -1,6 +1,8 @@
 package team.tran.colleges.suggest.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import team.tran.colleges.utils.IDUtil;
 import team.tran.colleges.utils.TokenUtils;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -85,10 +89,10 @@ public class SuggestServiceImpl implements ISuggestService {
     @Override
     public Map<String, Object> replaySuggest(String token, String con, String id,String sid) {
         //1.验证参数
-        if (token==null||token.equals(" ")){
+        if (token==null||token.equals("")){
             return DataUtil.printf(-1,"请重新登录");
         }
-        if (con==null||con.equals(" ")||id==null||id.equals(" ")){
+        if (con==null||con.equals("")||id==null||id.equals("")){
             return DataUtil.printf(-1,"参数错误");
         }
         //2.验证回复建议
@@ -132,21 +136,70 @@ public class SuggestServiceImpl implements ISuggestService {
      * @date: 2021/6/1
      */
     @Override
-    public Map<String, Object> getSuggestByState(String token, Integer state) {
-        return null;
+    public Map<String, Object> getSuggestByState(String token, Integer state,Integer page,Integer size) {
+        // 修改page
+        DataUtil.updatePage(page,size);
+        // 验证 state
+        if (state==null)
+            return DataUtil.printf(-5,"参数为空");
+        if (token==null||token.equals("")){
+            return DataUtil.printf(-1,"请重新登录");
+        }
+        //验证token
+        String myId = TokenUtils.getToken(token);
+        if (myId==null) {
+            return DataUtil.printf(-1, "请重新登录");
+        }
+        // 查询数据
+        QueryWrapper<Suggest> query = new QueryWrapper<>();
+        HashMap<String, Object> abs = new HashMap<>();
+        if (state==0)
+            abs.put("isRead",0);
+        else
+            abs.put("isRead",1);
+        query.allEq(abs);
+        query.last(" limit " + page+","+size);
+        // 查询
+        List<Suggest> suggestList = suggestDao.selectList(query);
+        return DataUtil.printf(0,"获取成功",suggestList);
+
     }
 
     /**
      * @param: token 教师 token
      * @param: state 是否回复
-     * @description: TODO 获取课程 state ：1-已经回复 0-没有回复
+     * @description: TODO 获取课程 state ：1-已经回复 0-没有回复 null-获取全部
      * @return: java.util.Map<java.lang.String,java.lang.Object>
      * @author: tran
      * @date: 2021/6/1
      */
     @Override
-    public Map<String, Object> getTeaSuggestByState(String token, Integer state) {
-        return null;
+    public Map<String, Object> getTeaSuggestByState(String token, Integer state,Integer page,Integer size) {
+        // 修改page
+        DataUtil.updatePage(page,size);
+        if (token==null||token.equals("")){
+            return DataUtil.printf(-1,"请重新登录");
+        }
+        //验证token
+        String myId = TokenUtils.getToken(token);
+        if (myId==null) {
+            return DataUtil.printf(-1, "请重新登录");
+        }
+        QueryWrapper<Suggest> query = new QueryWrapper<>();
+        HashMap<String, Object> abs = new HashMap<>();
+        // 查询数据
+        if (state==null){
+            query.allEq(abs);
+
+        }else if (state==0){
+            query.eq("isRead",0);
+        }else {
+            query.eq("isRead",1);
+        }
+
+        query.last(" limit " + page+","+size);
+        return DataUtil.printf(0,"获取成功",suggestDao.selectList(query));
+
     }
 
 }
