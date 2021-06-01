@@ -148,4 +148,9 @@ public class SuggestServiceImpl implements ISuggestService {
     public Map<String, Object> getTeaSuggestByState(String token, Integer state) {
         return null;
     }
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
 }

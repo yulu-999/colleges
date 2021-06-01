@@ -24,4 +24,8 @@ public class Course {
     private Integer coStart;
     // 周次
     private String coWeek;
+    // 创建时间
+    private String creatTime;
+
+
 }
