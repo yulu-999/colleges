@@ -18,9 +18,16 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class TokenUtils {
 
-    @Autowired
+
+
+
+
     private static RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    public TokenUtils(RedisTemplate<String, String> redisTemplate){
+        this.redisTemplate=redisTemplate;
+    }
 
     /**
      * @param: token 用户的token
@@ -30,13 +37,19 @@ public class TokenUtils {
      * @date: 2021/6/1
      */
     public static String getToken(String token) {
-        //获取操作键值对象
-        ValueOperations<String,String> operations = redisTemplate.opsForValue();
-        //更新失效时间
-        String id = operations.get(token);
-        assert id != null;
-        operations.set(token,id,1, TimeUnit.DAYS);
-        return id;
+        try{
+            //获取操作键值对象
+            ValueOperations<String,String> operations = redisTemplate.opsForValue();
+            //更新失效时间
+            String id = operations.get(token+"_token");
+            assert id != null;
+            operations.set(token+"_token",id,1, TimeUnit.DAYS);
+            return id;
+        }catch (NullPointerException e){
+//            e.printStackTrace();
+            return  null;
+        }
+
     }
 
 
@@ -51,9 +64,9 @@ public class TokenUtils {
         //获取操作键值对象
         ValueOperations<String,String> operations = redisTemplate.opsForValue();
         // 生成token
-        String token = IDUtil.getID()+"token";
+        String token = IDUtil.getID();
         // 存入并设置失效时间为1天时间为
-        operations.set(token,id,1, TimeUnit.DAYS);
+        operations.set(token+"_token",id,1, TimeUnit.DAYS);
         // 返回 Token
         return token;
     }

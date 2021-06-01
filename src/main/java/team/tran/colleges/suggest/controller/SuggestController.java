@@ -2,6 +2,7 @@ package team.tran.colleges.suggest.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ public class SuggestController {
 
 
     @Autowired
+    @Qualifier("SuggestServiceImpl")
     private ISuggestService suggestService;
 
     /**
@@ -34,6 +36,6 @@ public class SuggestController {
         return suggestService.addSuggest(token,suggestMsg,id);
     }
 
-    
+
 
 }

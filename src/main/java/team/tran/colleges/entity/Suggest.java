@@ -1,5 +1,6 @@
 package team.tran.colleges.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Data;
  **/
 @Data
 public class Suggest {
+    @TableId("suggestid")
     // 程建议id
     private String suggestId;
     // 学生id

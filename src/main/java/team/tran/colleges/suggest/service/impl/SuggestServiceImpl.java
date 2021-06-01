@@ -20,7 +20,7 @@ import java.util.Map;
  * @author: tran
  * @date: 2021/5/31
  **/
-@Service
+@Service("SuggestServiceImpl")
 public class SuggestServiceImpl implements ISuggestService {
 
 
