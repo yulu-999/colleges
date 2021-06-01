@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  **/
 
 @SpringBootApplication
+@MapperScan("team.tran.colleges.*")
 @MapperScan("team.tran.colleges.*.dao")
 public class CollegesApplication {
     public static void main(String[] args) {

@@ -112,10 +112,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:5.3.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.xmlunit:xmlunit-core:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: com.baomidou:mybatis-plus-boot-starter:3.4.3" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.4.6" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-jdbc:2.4.6" level="project" />
-    <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:3.4.5" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:5.3.7" level="project" />
     <orderEntry type="library" name="Maven: com.baomidou:mybatis-plus:3.4.3" level="project" />
     <orderEntry type="library" name="Maven: com.baomidou:mybatis-plus-extension:3.4.3" level="project" />
     <orderEntry type="library" name="Maven: com.baomidou:mybatis-plus-core:3.4.3" level="project" />
@@ -123,11 +119,16 @@
     <orderEntry type="library" name="Maven: com.github.jsqlparser:jsqlparser:4.0" level="project" />
     <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.5.7" level="project" />
     <orderEntry type="library" name="Maven: org.mybatis:mybatis-spring:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.4.6" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-jdbc:2.4.6" level="project" />
+    <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:3.4.5" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:5.3.7" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.34" level="project" />
     <orderEntry type="library" name="Maven: org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16" level="project" />
     <orderEntry type="library" name="Maven: cn.hutool:hutool-all:5.6.5" level="project" />
     <orderEntry type="library" name="Maven: redis.clients:jedis:2.10.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-pool2:2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.75" level="project" />
   </component>
 </module>
