@@ -122,4 +122,30 @@ public class SuggestServiceImpl implements ISuggestService {
            return DataUtil.printf(-1,"回复建议失败");
        }
     }
+
+    /**
+     * @param: token 学生 token
+     * @param: state 状态
+     * @description: TODO 根据状态获取提出的建议
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @author: tran
+     * @date: 2021/6/1
+     */
+    @Override
+    public Map<String, Object> getSuggestByState(String token, Integer state) {
+        return null;
+    }
+
+    /**
+     * @param: token 教师 token
+     * @param: state 是否回复
+     * @description: TODO 获取课程 state ：1-已经回复 0-没有回复
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @author: tran
+     * @date: 2021/6/1
+     */
+    @Override
+    public Map<String, Object> getTeaSuggestByState(String token, Integer state) {
+        return null;
+    }
 }

@@ -106,24 +106,6 @@ public class CommentServiceImpl implements ICommentService {
         } else
             return DataUtil.printf(-1, "请选择正确的等级");
 
-//        // 3. 判断星级
-//        if (grade == 1) {
-//            remarkInfo.setRemarkInfoMsg(1);
-//            //添加数据
-//            commentDao.insert(remarkInfo);
-//        } else if (grade == 2) {
-//            remarkInfo.setRemarkInfoMsg(2);
-//            //添加数据
-//            commentDao.insert(remarkInfo);
-//        } else if (grade == 3) {
-//            remarkInfo.setRemarkInfoMsg(3);
-//            //添加数据
-//            commentDao.insert(remarkInfo);
-//        } else if (grade > 3 || grade < 1) {
-//            return DataUtil.printf(-1, "请选择正确的等级");
-//        }
-//        return DataUtil.printf(0, "点评成功");
-
     }
 
     @Override

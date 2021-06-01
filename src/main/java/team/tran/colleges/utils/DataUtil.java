@@ -67,4 +67,24 @@ public final class DataUtil {
         return  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Long.parseLong(data));
 
     }
+
+
+
+
+    /**
+     * @param: page
+     * @param: size
+     * @description: TODO 页数修改
+     * @return: void
+     * @author: tran
+     * @date: 2021/6/1
+     */
+    public static void updatePage(Integer page,Integer size){
+        // 验证参数
+        if (page==null||page==0)
+            page=1;
+        if (size==null)
+            size=20;
+    }
+
 }

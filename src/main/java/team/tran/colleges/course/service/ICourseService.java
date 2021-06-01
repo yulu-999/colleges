@@ -38,4 +38,21 @@ public interface ICourseService {
      */
     Map<String ,Object> selectCourseByTime(Integer page,Integer size);
 
+
+
+    /**
+     * @param: id 课程id
+     * @description: TODO 根据课程id获取课程信息
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @author: tran
+     * @date: 2021/6/1
+     */
+    Map<String, Object> selectCourseById(String id);
+
+
+
+
+
+
+
 }
