@@ -91,7 +91,11 @@ public class SuggestServiceImpl implements ISuggestService {
         if (con==null||con.equals(" ")||id==null||id.equals(" ")){
             return DataUtil.printf(-1,"参数错误");
         }
-        //2.验证token
+        //2.验证回复建议
+        if (sid==null||sid.equals("")){
+            return DataUtil.printf(-1,"请选择要回复的建议");
+        }
+        //3.验证token
         String myId = TokenUtils.getToken(token);
         if (myId==null) {
             return DataUtil.printf(-1, "请重新登录");
@@ -110,9 +114,12 @@ public class SuggestServiceImpl implements ISuggestService {
         //是否已读
         suggest.setIsRead(0);
         //添加回复
-        suggestDao.updateById(suggest);
-        return DataUtil.printf(0,"回复建议成功");
+       int i= suggestDao.updateById(suggest);
+       //4.验证回复是否成功
+       if (i>0){
+           return DataUtil.printf(0,"回复建议成功");
+       }else {
+           return DataUtil.printf(-1,"回复建议失败");
+       }
     }
-
-
 }
