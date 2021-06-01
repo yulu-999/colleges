@@ -14,11 +14,14 @@ public class RemarkInfo {
     private String remarkInfoId;
     // 点评等级
     private Integer remarkInfoMsg;
+    // 点评信息
+    private Integer remarkInfoText;
     // 学生id
     private String sid;
     // 课程id
     private String cid;
     // 点评时间
     private String createTime;
+
 
 }

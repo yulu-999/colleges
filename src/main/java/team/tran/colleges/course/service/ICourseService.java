@@ -21,11 +21,21 @@ public interface ICourseService {
 
 
     /**
-     * 查询全部
+     * 课程热榜
      * @param page 页数
      * @param size 条数
      * @return Map
      */
     Map<String ,Object> selectCourse(Integer page,Integer size);
+
+
+
+    /**
+     * 最新课程
+     * @param page 页数
+     * @param size 条数
+     * @return Map
+     */
+    Map<String ,Object> selectCourseByTime(Integer page,Integer size);
 
 }
