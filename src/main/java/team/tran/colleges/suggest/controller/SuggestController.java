@@ -34,5 +34,6 @@ public class SuggestController {
         return suggestService.addSuggest(token,suggestMsg,id);
     }
 
+    
 
 }
