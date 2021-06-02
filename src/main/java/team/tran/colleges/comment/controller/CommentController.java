@@ -55,6 +55,13 @@ public class CommentController {
         return commentService.login(type,name,password);
     }
 
+    /**
+     * 获取自己的留言
+     * @param token 学生的token
+     * @param page 页数
+     * @param size 大小
+     * @return Map
+     */
     @RequestMapping("/comment/get")
     Map<String ,Object> selectRemark(@RequestHeader("token")String token,Integer page,Integer size){
         return commentService.selectRemark(token,page,size);

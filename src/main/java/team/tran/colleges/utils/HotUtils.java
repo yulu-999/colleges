@@ -2,8 +2,11 @@ package team.tran.colleges.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +25,6 @@ public class HotUtils {
     public HotUtils(RedisTemplate<String, String> redisTemplate){
         this.redisTemplate=redisTemplate;
     }
-
-
     /**
      * @param:
      * @description: TODO 存入
@@ -31,8 +32,9 @@ public class HotUtils {
      * @author: tran
      * @date: 2021/6/1
      */
-    public boolean addCourse(){
-        return  false;
+    public static void addCourse(String name ,String  key){
+        redisTemplate.opsForZSet().incrementScore(name,key,1);
+
     }
 
 
@@ -43,7 +45,7 @@ public class HotUtils {
      * @author: tran
      * @date: 2021/6/1
      */
-    public List<Map<String, Object>> selectCourseHot(String page,String size){
+    public static  List<Map<String, Object>> selectCourseHot(String page,String size){
         return  null;
     }
 

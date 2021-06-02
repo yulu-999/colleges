@@ -21,7 +21,7 @@ public interface ICourseService {
 
 
     /**
-     * 课程热榜
+     * 精品推荐
      * @param page 页数
      * @param size 条数
      * @return Map

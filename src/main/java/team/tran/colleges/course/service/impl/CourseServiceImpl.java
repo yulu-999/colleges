@@ -104,9 +104,4 @@ public class CourseServiceImpl implements ICourseService {
             return DataUtil.printf(0,"获取成功",course);
     }
 
-
-
-
-
-
 }

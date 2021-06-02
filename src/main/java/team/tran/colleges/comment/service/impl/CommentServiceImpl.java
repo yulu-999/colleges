@@ -14,9 +14,7 @@ import team.tran.colleges.entity.Suggest;
 import team.tran.colleges.entity.Teacher;
 import team.tran.colleges.mapper.StudentDao;
 import team.tran.colleges.mapper.TeacherDao;
-import team.tran.colleges.utils.DataUtil;
-import team.tran.colleges.utils.IDUtil;
-import team.tran.colleges.utils.TokenUtils;
+import team.tran.colleges.utils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +67,8 @@ public class CommentServiceImpl implements ICommentService {
             return DataUtil.printf(-1, "请重新登录");
         }
         RemarkInfo remarkInfo = new RemarkInfo();
+
+        //判断星级
         if (grade == 1) {
             //课程点评的id
             remarkInfo.setRemarkInfoId(IDUtil.getID());
@@ -80,7 +80,6 @@ public class CommentServiceImpl implements ICommentService {
             remarkInfo.setRemarkInfoText(text);
             //点评的等级
             remarkInfo.setRemarkInfoMsg(1);
-
             //点评时间
             remarkInfo.setCreateTime(System.currentTimeMillis() + "");
             //添加数据
@@ -115,6 +114,8 @@ public class CommentServiceImpl implements ICommentService {
             remarkInfo.setRemarkInfoText(text);
             //点评的等级
             remarkInfo.setRemarkInfoMsg(3);
+            //添加到reids数据库里
+            HotUtils.addCourse(Ranking.HOTCOURSE.getName(),id);
             //点评时间
             remarkInfo.setCreateTime(System.currentTimeMillis() + "");
             //添加数据
