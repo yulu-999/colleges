@@ -45,6 +45,7 @@ public class TokenUtils {
             String id = operations.get(token+"_token");
             assert id != null;
             operations.set(token+"_token",id,1, TimeUnit.DAYS);
+
             return id;
         }catch (NullPointerException e){
 //            e.printStackTrace();

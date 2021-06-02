@@ -37,4 +37,26 @@ public class CommentController {
     Map<String,Object> stuRemark(@RequestHeader("token") String token, String id, Integer grade, String text){
         return commentService.stuRemark(token,id,grade,text);
     }
+
+    @RequestMapping("/comment/del")
+    Map<String ,Object> delRemark(@RequestHeader("token")String token,String id){
+        return commentService.delRemark(token,id);
+    }
+
+    /**
+     * 教师和学生的登录
+     * @param type 类型 为1学生登录 为2教师登录
+     * @param name 账号
+     * @param password 密码
+     * @return Map
+     */
+    @RequestMapping("/login")
+    Map<String,Object> login(String type,String name,String password){
+        return commentService.login(type,name,password);
+    }
+
+    @RequestMapping("/comment/get")
+    Map<String ,Object> selectRemark(@RequestHeader("token")String token,Integer page,Integer size){
+        return commentService.selectRemark(token,page,size);
+    }
 }

@@ -44,5 +44,13 @@ public interface ICommentService {
      */
     Map<String, Object> selectRemark(String token,Integer page,Integer size);
 
+    /**
+     * 教师和学生的登录
+     * @param type 类型 为1学生登录 为2教师登录
+     * @param name 账号
+     * @param password 密码
+     * @return Map
+     */
+    Map<String ,Object> login(String type,String name,String password);
 
 }

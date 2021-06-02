@@ -43,7 +43,7 @@ public class HotUtils {
      * @author: tran
      * @date: 2021/6/1
      */
-    public List<Map<String, Object>> selectCourseHot(){
+    public List<Map<String, Object>> selectCourseHot(String page,String size){
         return  null;
     }
 

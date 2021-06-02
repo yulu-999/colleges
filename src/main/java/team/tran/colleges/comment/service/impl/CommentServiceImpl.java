@@ -3,17 +3,24 @@ package team.tran.colleges.comment.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import team.tran.colleges.comment.dao.CommentDao;
 import team.tran.colleges.comment.service.ICommentService;
 
 import team.tran.colleges.entity.RemarkInfo;
+import team.tran.colleges.entity.Student;
 import team.tran.colleges.entity.Suggest;
+import team.tran.colleges.entity.Teacher;
+import team.tran.colleges.mapper.StudentDao;
+import team.tran.colleges.mapper.TeacherDao;
 import team.tran.colleges.utils.DataUtil;
 import team.tran.colleges.utils.IDUtil;
 import team.tran.colleges.utils.TokenUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +37,12 @@ public class CommentServiceImpl implements ICommentService {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private StudentDao studentDao;
+
+    @Autowired
+    private TeacherDao teacherDao;
 
 
     /**
@@ -67,6 +80,7 @@ public class CommentServiceImpl implements ICommentService {
             remarkInfo.setRemarkInfoText(text);
             //点评的等级
             remarkInfo.setRemarkInfoMsg(1);
+
             //点评时间
             remarkInfo.setCreateTime(System.currentTimeMillis() + "");
             //添加数据
@@ -115,42 +129,123 @@ public class CommentServiceImpl implements ICommentService {
      * @param: token
      * @param: id
      * @description: TODO 对点评进行删除 只能删除自己的
-     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
      * @author: tran
      * @date: 2021/6/1
      */
     @Override
     public Map<String, Object> delRemark(String token, String id) {
-        return null;
+        //1.验证参数
+        if (token == null || token.equals("")) {
+            return DataUtil.printf(-1, "参数错误");
+        }
+        if (id == null || id.equals("")) {
+            return DataUtil.printf(-1, "参数错误");
+        }
+        String myId = TokenUtils.getToken(token);
+        System.out.println(myId);
+        if (myId == null) {
+            return DataUtil.printf(-1, "请重新登录");
+        }
+        //获取操作键值对象
+        ValueOperations<String,String> operations = redisTemplate.opsForValue();
+        System.out.println("用户id"+myId);
+        QueryWrapper<RemarkInfo> delete = new QueryWrapper<>();
+        delete.eq("sid", myId);
+        delete.eq("remarkinfoid",id);
+        int remarkInfo = commentDao.delete(delete);
+        if (remarkInfo>0){
+            return DataUtil.printf(0,"删除成功" );
+        }else {
+            return DataUtil.printf(-1,"删除失败");
+        }
+
     }
 
     /**
      * @param: token 学生的 token
      * @description: TODO 获取自己所有点评过的信息
-     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
      * @author: tran
      * @date: 2021/6/1
      */
     @Override
-    public Map<String, Object> selectRemark(String token,Integer page,Integer size) {
-
+    public Map<String, Object> selectRemark(String token, Integer page, Integer size) {
         //  验证 token
         if (token == null || token.equals(""))
             return DataUtil.printf(-1, "参数为空");
         String myId = TokenUtils.getToken(token);
+        System.out.println(myId);
         if (myId == null) {
             return DataUtil.printf(-1, "请重新登录");
         }
         // 页数修改
-        DataUtil.updatePage(page,size);
+        DataUtil.updatePage(page, size);
         // 查询数据
         QueryWrapper<RemarkInfo> query = new QueryWrapper<>();
         HashMap<String, Object> abs = new HashMap<>();
-        query.eq("sid",myId);
-        query.last(" limit " + page+","+size);
-        commentDao.selectList(query);
+        query.eq("sid", myId);
+        query.last(" limit " + page + "," + size);
+        List<RemarkInfo> remarkInfos = commentDao.selectList(query);
         // 返回数据
-        return DataUtil.printf(0,"获取成功",query.last(" limit " + page+","+size));
+        return DataUtil.printf(0, "获取成功",remarkInfos);
+    }
 
+    /**
+     * 教师和学生的登录
+     * @param type 类型 为1学生登录 为2教师登录
+     * @param name 账号
+     * @param password 密码
+     * @return Map
+     */
+    @Override
+    public Map<String, Object> login(String type, String name, String password) {
+        //1.验证参数
+        if (type == null || type.equals("")) {
+            return DataUtil.printf(-1, "参数错误");
+        }
+        if (name == null || name.equals("") || password == null || password.equals("")) {
+            return DataUtil.printf(-1, "请输入账号或密码");
+        }
+        //判断是学生登录还是教师登录
+        if (type.equals("1")) {
+            QueryWrapper<Student> query = new QueryWrapper<>();
+            query.eq("unumber", name);
+            Student student = studentDao.selectOne(query);
+            //判断是不是该校学生
+            if (student == null) {
+                return DataUtil.printf(-1, "你不是本校学生");
+            } else {
+                String password1 = student.getPassword();
+                //判断密码是否正确
+                if (password1.equals(password)) {
+                    String token = TokenUtils.createToken(student.getUid());
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("token", token);
+                    return DataUtil.printf(0, "登录成功", map);
+                } else {
+                    return DataUtil.printf(-1, "密码错误");
+                }
+            }
+        } else {
+            QueryWrapper<Teacher> query = new QueryWrapper<>();
+            query.eq("tnumber", name);
+            Teacher teacher = teacherDao.selectOne(query);
+            //判断是不是该校老师
+            if (teacher == null) {
+                return DataUtil.printf(-1, "你不是本校老师");
+            } else {
+                String password1 = teacher.getPassword();
+                //判断密码是否正确
+                if (password1.equals(password)) {
+                    String token = TokenUtils.createToken(teacher.getTid());
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("token", token);
+                    return DataUtil.printf(0, "登录成功", map);
+                } else {
+                    return DataUtil.printf(-1, "密码错误");
+                }
+            }
+        }
     }
 }
