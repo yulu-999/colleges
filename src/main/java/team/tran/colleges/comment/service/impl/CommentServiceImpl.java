@@ -181,7 +181,7 @@ public class CommentServiceImpl implements ICommentService {
     public Map<String, Object> login(String type, String name, String password) {
         //1.验证参数
         if (type == null || type.equals("")) {
-            return DataUtil.printf(-1, "参数错误");
+            type="1";
         }
         if (name == null || name.equals("") || password == null || password.equals("")) {
             return DataUtil.printf(-1, "请输入账号或密码");
