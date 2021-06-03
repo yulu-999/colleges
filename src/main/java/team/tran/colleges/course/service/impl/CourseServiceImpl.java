@@ -140,19 +140,19 @@ public class CourseServiceImpl implements ICourseService {
         // 验证参数
         if (id == null || id.equals(""))
             return DataUtil.printf(-5, "参数错误");
-        QueryWrapper<Course> query = new QueryWrapper<>();
-        query.eq("coid", id);
-        List<Course> list = courseDao.selectList(query);
 
+
+        ValueOperations<String, String> operations = redisTemplate.opsForValue();
+        String courseJson = operations.get(id + "_course");
+        Object parse = JSONObject.parse(courseJson);
         // 没有查询到数据
-        if (list == null) {
+        if (parse == null) {
             return DataUtil.printf(-2, "没有该课程信息");
-
         }
         else {
             //添加到redis里
             HotUtils.addCourse(Ranking.BOUTIQUE, id);
-            return DataUtil.printf(0, "获取成功", list);
+            return DataUtil.printf(0, "获取成功", parse);
         }
 
     }

@@ -103,7 +103,6 @@ public class CommentServiceImpl implements ICommentService {
             commentDao.insert(remarkInfo);
             //添加到mongodb里面
 
-
             if (grade>2){
                 HotUtils.addCourse(Ranking.HOTCOURSE,id);
             }
