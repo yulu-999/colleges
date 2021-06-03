@@ -18,7 +18,7 @@ import java.util.Map;
  * @date: 2021/5/31
  **/
 @RestController
-@CrossOrigin("")
+@CrossOrigin("*")
 public class SuggestController {
 
 

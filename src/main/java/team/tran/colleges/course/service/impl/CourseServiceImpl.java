@@ -188,6 +188,7 @@ public class CourseServiceImpl implements ICourseService {
         }
         map.put("data", list);
         // 返回数据
+
         return DataUtil.printf(0, data.size(), "获取成功", map);
     }
 }

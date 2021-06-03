@@ -12,9 +12,11 @@ import team.tran.colleges.comment.dao.CommentDao;
 import team.tran.colleges.comment.service.ICommentService;
 
 import team.tran.colleges.entity.RemarkInfo;
+import team.tran.colleges.entity.RemarkInfoMongodb;
 import team.tran.colleges.entity.Student;
 import team.tran.colleges.entity.Teacher;
 import team.tran.colleges.mapper.RemarkInfoDao;
+import team.tran.colleges.mapper.RemarkInfoMongodbDao;
 import team.tran.colleges.mapper.StudentDao;
 import team.tran.colleges.mapper.TeacherDao;
 import team.tran.colleges.utils.*;
@@ -51,6 +53,8 @@ public class CommentServiceImpl implements ICommentService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private RemarkInfoMongodbDao remarkInfoMongobdDao;
     /**
      * @param: token  学生的 token
      * @param: id 课程的id
@@ -81,9 +85,10 @@ public class CommentServiceImpl implements ICommentService {
         RemarkInfo select =remarkInfoDao.selectOne(query);
 
         if (select==null){
+            String rid = IDUtil.getID();
             RemarkInfo remarkInfo = new RemarkInfo();
             //课程点评的id
-            remarkInfo.setRemarkInfoId(IDUtil.getID());
+            remarkInfo.setRemarkInfoId(rid);
             //学生id
             remarkInfo.setSid(myId);
             //课程id
@@ -96,15 +101,19 @@ public class CommentServiceImpl implements ICommentService {
             remarkInfo.setCreateTime(System.currentTimeMillis() + "");
             //添加数据
             commentDao.insert(remarkInfo);
+            //
+            RemarkInfoMongodb remarkInfoMongodb=new RemarkInfoMongodb();
+            List<Map<String, Object>> maps = remarkInfoMongobdDao.selectMonodb();
+            //添加到mongodb里面
             RemarkInfo insert = mongoTemplate.insert(remarkInfo);
-            List<RemarkInfo> list=new ArrayList<>();
-            list.add(insert);
-            Map<String,Object> map=new HashMap<>();
-            map.put("list",list);
+//            List<RemarkInfo> list=new ArrayList<>();
+//            list.add(insert);
+//            Map<String,Object> map=new HashMap<>();
+//            map.put("list",list);
             if (grade>2){
                 HotUtils.addCourse(Ranking.HOTCOURSE,id);
             }
-            return DataUtil.printf(0, "点评成功",map);
+            return DataUtil.printf(0, "点评成功",maps);
         }else {
             return DataUtil.printf(-1,"你已经点评过了");
         }
