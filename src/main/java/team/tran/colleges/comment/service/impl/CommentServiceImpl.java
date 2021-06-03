@@ -2,6 +2,9 @@ package team.tran.colleges.comment.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -10,7 +13,6 @@ import team.tran.colleges.comment.service.ICommentService;
 
 import team.tran.colleges.entity.RemarkInfo;
 import team.tran.colleges.entity.Student;
-import team.tran.colleges.entity.Suggest;
 import team.tran.colleges.entity.Teacher;
 import team.tran.colleges.mapper.RemarkInfoDao;
 import team.tran.colleges.mapper.StudentDao;
@@ -46,6 +48,8 @@ public class CommentServiceImpl implements ICommentService {
     @Autowired
     private RemarkInfoDao remarkInfoDao;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     /**
      * @param: token  学生的 token
@@ -92,10 +96,15 @@ public class CommentServiceImpl implements ICommentService {
             remarkInfo.setCreateTime(System.currentTimeMillis() + "");
             //添加数据
             commentDao.insert(remarkInfo);
+            RemarkInfo insert = mongoTemplate.insert(remarkInfo);
+            List<RemarkInfo> list=new ArrayList<>();
+            list.add(insert);
+            Map<String,Object> map=new HashMap<>();
+            map.put("list",list);
             if (grade>2){
                 HotUtils.addCourse(Ranking.HOTCOURSE,id);
             }
-            return DataUtil.printf(0, "点评成功");
+            return DataUtil.printf(0, "点评成功",map);
         }else {
             return DataUtil.printf(-1,"你已经点评过了");
         }
@@ -226,5 +235,27 @@ public class CommentServiceImpl implements ICommentService {
                 }
             }
         }
+    }
+
+    /**
+     * 根据课程id从mongodb里面找到留言
+     * @param id
+     * @return
+     */
+    @Override
+    public Map<String, Object> selectEvaluate(String id) {
+        Map<String ,Object> map=new HashMap<>();
+        //用来封装所有条件的对象
+        Query query = new Query();
+        //用来构建条件
+        Criteria criteria = new Criteria();
+        //在mongodb里查询课程=id的
+        Query coid = query.addCriteria(criteria.and("coid").is(id));
+
+        List<RemarkInfo> list = mongoTemplate.find(query, RemarkInfo.class);
+        list.forEach(item -> {
+            item.setCreateTime( DataUtil.dataTime(item.getCreateTime().toString()));
+        });
+        return DataUtil.printf(0,"获取所有评论成功",list);
     }
 }

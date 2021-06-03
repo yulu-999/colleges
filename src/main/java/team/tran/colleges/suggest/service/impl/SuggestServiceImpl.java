@@ -4,6 +4,7 @@ package team.tran.colleges.suggest.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import team.tran.colleges.entity.Suggest;
@@ -37,6 +38,8 @@ public class SuggestServiceImpl implements ISuggestService {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+
 
     /**
      * 提出建议
@@ -119,6 +122,7 @@ public class SuggestServiceImpl implements ISuggestService {
         suggest.setIsRead(0);
         //添加回复
        int i= suggestDao.updateById(suggest);
+
        //4.验证回复是否成功
        if (i>0){
            return DataUtil.printf(0,"回复建议成功");

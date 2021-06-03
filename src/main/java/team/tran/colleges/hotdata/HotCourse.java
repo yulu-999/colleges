@@ -29,29 +29,29 @@ import java.util.concurrent.TimeUnit;
 public class HotCourse {
 
 
-    private static CourseDao courseDao;
+    @Autowired
+    private  CourseDao courseDao;
 
 
     @Autowired
-    public  HotCourse(CourseDao courseDao,RedisTemplate<String, String> redisTemplate) {
-        this.courseDao = courseDao;
-        this.redisTemplate = redisTemplate;
-    }
-
-
-    private  static RedisTemplate<String, String> redisTemplate;
+    private   RedisTemplate<String, String> redisTemplate;
 
     @Scheduled(cron = "* * * 1 * ? ")
     @PostConstruct
-    public static void hot() {
+    public  void hot() {
         //连表查询
         List<Map<String, Object>> maps = courseDao.selectCouserAndTeacher();
+        ValueOperations<String,String> operations = redisTemplate.opsForValue();
+        ZSetOperations zSetOperations = redisTemplate.opsForZSet();
+//        redisTemplate.delete(Ranking.BOUTIQUE.getName());
         //循环添加到redis数据库里
         for (Map<String, Object> map : maps) {
             String s = JSONObject.toJSONString(map);
-            ValueOperations<String, String> operations = redisTemplate.opsForValue();
             operations.set(map.get("id") + "_course", s);
+            zSetOperations.incrementScore(Ranking.BOUTIQUE.getName(),map.get("id"),1);
         }
-        
+
+
+
     }
 }

@@ -16,7 +16,7 @@ public class RemarkInfo {
 
     //点评信息id
     @TableId("remarkinfoid")
-    private String remarkInfoId;
+        private String remarkInfoId;
     // 点评等级
     private Integer remarkInfoMsg;
     // 点评信息

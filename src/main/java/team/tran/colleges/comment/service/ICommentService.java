@@ -52,4 +52,12 @@ public interface ICommentService {
      */
     Map<String ,Object> login(String type,String name,String password);
 
+
+    /**
+     * 根据课程id从mongodb里面找到留言
+     * @param id
+     * @return
+     */
+    Map<String,Object> selectEvaluate(String id);
+
 }

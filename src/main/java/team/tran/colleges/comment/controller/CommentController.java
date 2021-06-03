@@ -76,5 +76,13 @@ public class CommentController {
         return commentService.selectRemark(token,page,size);
     }
 
-
+    /**
+     * 根据课程id从mongodb里面找到留言
+     * @param id
+     * @return
+     */
+    @RequestMapping("/comment/selectEvaluate")
+    Map<String,Object> selectEvaluate(String id){
+        return commentService.selectEvaluate(id);
+    }
 }
