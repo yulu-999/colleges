@@ -145,6 +145,7 @@ public class CourseServiceImpl implements ICourseService {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
         String courseJson = operations.get(id + "_course");
         Object parse = JSONObject.parse(courseJson);
+
         // 没有查询到数据
         if (parse == null) {
             return DataUtil.printf(-2, "没有该课程信息");
