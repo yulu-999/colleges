@@ -35,10 +35,7 @@ public class CourseServiceImpl implements ICourseService {
     private CourseDao courseDao;
 
     @Autowired
-    private  RedisTemplate<String, String> redisTemplate;
-
-
-
+    private RedisTemplate<String, String> redisTemplate;
 
 
     /**
@@ -46,30 +43,33 @@ public class CourseServiceImpl implements ICourseService {
      * @param: size 每页大小
      * @param: msg 查询信息
      * @description: TODO 条件 1.课程名 2.教师名 3.
-     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
      * @author: tran
      * @date: 2021/6/1
      */
     @Override
     public Map<String, Object> LikeCourse(Integer page, Integer size, String msg) {
-        // 页数修改
-        DataUtil.updatePage(page,size);
-       // 修改page
-        page = (page-1)*size;
-       // 模糊查询
+        // 验证参数
+        if (page == null || page == 0)
+            page = 1;
+        if (size == null)
+            size = 20;
+        page = (page - 1) * size;
+        // 模糊查询
         List<Map<String, Object>> data = courseDao.selectCourseByMsg(page, size, msg);
         //类型转换
-        data.forEach(item->{
-            item.put("time",DataUtil.dataTime(item.get("time").toString()));
+        data.forEach(item -> {
+            item.put("time", DataUtil.dataTime(item.get("time").toString()));
         });
         // 返回数据
-        return DataUtil.printf(0,data.size(),"获取成功",data);
+        return DataUtil.printf(0, data.size(), "获取成功", data);
     }
+
     /**
      * @param: page
      * @param: size
      * @description: TODO 精品推荐
-     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
      * @author: tran
      * @date: 2021/6/1
      */
@@ -77,16 +77,16 @@ public class CourseServiceImpl implements ICourseService {
     public Map<String, Object> selectCourse(Integer page, Integer size) {
 
         // 页数修改
-        DataUtil.updatePage(page,size);
+        DataUtil.updatePage(page, size);
         // 修改page
-        page = (page-1)*size;
+        page = (page - 1) * size;
         List<Map<String, Object>> data = HotUtils.selectCourseHot();
-        System.out.println("这是排序了的数据"+data);
+        System.out.println("这是排序了的数据" + data);
         ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
-        List<JSONObject> list=new ArrayList();
-        Map<String ,Object> map=new HashMap<>();
+        List<JSONObject> list = new ArrayList();
+        Map<String, Object> map = new HashMap<>();
         for (Map<String, Object> datum : data) {
-            String coid = datum.get("coid")+"_course";
+            String coid = datum.get("coid") + "_course";
             System.out.println(coid);
             String s = stringStringValueOperations.get(coid);
             System.out.println(s);
@@ -94,52 +94,52 @@ public class CourseServiceImpl implements ICourseService {
             System.out.println(jsonObject);
             list.add(jsonObject);
         }
-        map.put("data",list);
+        map.put("data", list);
         // 返回数据
-        return DataUtil.printf(0,data.size(),"获取成功",map);
+        return DataUtil.printf(0, data.size(), "获取成功", map);
     }
 
     /**
      * @param: page
      * @param: size
      * @description: TODO 最新信息
-     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
      * @author: tran
      * @date: 2021/6/1
      */
     @Override
     public Map<String, Object> selectCourseByTime(Integer page, Integer size) {
         // 页数修改
-        DataUtil.updatePage(page,size);
+        DataUtil.updatePage(page, size);
         // 查询数据
         List<Map<String, Object>> data = courseDao.selectCourse(page, size);
         //类型转换
-        data.forEach(item->{
-            item.put("time",DataUtil.dataTime(item.get("time").toString()));
+        data.forEach(item -> {
+            item.put("time", DataUtil.dataTime(item.get("time").toString()));
         });
         // 返回数据
-        return DataUtil.printf(0,data.size(),"获取成功",data);
+        return DataUtil.printf(0, data.size(), "获取成功", data);
     }
 
     /**
      * @param: id 课程id
      * @description: TODO 根据课程id获取课程信息
-     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
      * @author: tran
      * @date: 2021/6/1
      */
     @Override
     public Map<String, Object> selectCourseById(String id) {
         // 验证参数
-        if (id==null||id.equals(""))
-            return DataUtil.printf(-5,"参数错误");
+        if (id == null || id.equals(""))
+            return DataUtil.printf(-5, "参数错误");
         // 查询数据
         Course course = courseDao.selectById(id);
         // 没有查询到数据
-        if (course==null)
-            return DataUtil.printf(-2,"没有该课程信息");
+        if (course == null)
+            return DataUtil.printf(-2, "没有该课程信息");
         else
-            return DataUtil.printf(0,"获取成功",course);
+            return DataUtil.printf(0, "获取成功", course);
     }
 
 }

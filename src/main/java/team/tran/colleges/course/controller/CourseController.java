@@ -21,9 +21,29 @@ public class CourseController {
     @Qualifier("CourServiceImpl")
     private ICourseService courseService;
 
+    /**
+     * 精品推荐
+     * @param page 页数
+     * @param size 条数
+     * @return Map
+     */
     @RequestMapping("/course/hot")
     Map<String,Object> selectCourse(Integer page,Integer size){
         return courseService.selectCourse(page,size);
     }
+
+    /**
+     * 根据条件模糊查询
+     * @param page 页数
+     * @param size 条数
+     * @param msg 条件
+     * @return Map
+     */
+    @RequestMapping("course/search")
+    Map<String ,Object> LikeCourse(Integer page, Integer limit, String msg){
+        return courseService.LikeCourse(page,limit,msg);
+    }
+
+    
 
 }
