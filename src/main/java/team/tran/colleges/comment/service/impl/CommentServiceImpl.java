@@ -83,7 +83,6 @@ public class CommentServiceImpl implements ICommentService {
         query.eq("sid",myId);
         query.eq("coid",id);
         RemarkInfo select =remarkInfoDao.selectOne(query);
-
         if (select==null){
             String rid = IDUtil.getID();
             RemarkInfo remarkInfo = new RemarkInfo();
@@ -100,9 +99,29 @@ public class CommentServiceImpl implements ICommentService {
             //点评时间
             remarkInfo.setCreateTime(System.currentTimeMillis() + "");
             //添加数据
+            //List<Map<String, Object>> maps = remarkInfoMongobdDao.selectMonodb();
+            // mongoTemplate.insert(maps);
+            RemarkInfoMongodb remarkInfoMongodb=new RemarkInfoMongodb();
+            //remarkinfomongdbId
+            remarkInfoMongodb.setRemakerInfoId(rid);
+            //查询学生姓名
+            List<Student> list=remarkInfoMongobdDao.selectName(myId);
+            System.out.println(list);
+            //获取学生姓名
+            remarkInfoMongodb.setName(list.get(0).getUname());
+            //课程id
+            remarkInfoMongodb.setCoId(id);
+            //等级
+            remarkInfoMongodb.setGarde(grade.toString());
+            //备注
+            remarkInfoMongodb.setText(text);
+            //时间戳
+            remarkInfoMongodb.setCreateTime(System.currentTimeMillis()+"");
+            //添加到mongodb
+            RemarkInfoMongodb insert = mongoTemplate.insert(remarkInfoMongodb);
+            //添加到数据库
             commentDao.insert(remarkInfo);
-            //添加到mongodb里面
-
+            //判断如果星级大于2的话给他加入精品榜
             if (grade>2){
                 HotUtils.addCourse(Ranking.HOTCOURSE,id);
             }
@@ -252,9 +271,9 @@ public class CommentServiceImpl implements ICommentService {
         //用来构建条件
         Criteria criteria = new Criteria();
         //在mongodb里查询课程=id的
-        Query coid = query.addCriteria(criteria.and("coid").is(id));
+        Query coid = query.addCriteria(criteria.and("coId").is(id));
 
-        List<RemarkInfo> list = mongoTemplate.find(query, RemarkInfo.class);
+        List<RemarkInfoMongodb> list = mongoTemplate.find(query, RemarkInfoMongodb.class);
         list.forEach(item -> {
             item.setCreateTime( DataUtil.dataTime(item.getCreateTime().toString()));
         });
