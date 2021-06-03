@@ -1,26 +1,20 @@
 package team.tran.colleges.course.service.impl;
 
+
 import com.alibaba.fastjson.JSON;
+
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Tuple;
 import team.tran.colleges.course.dao.CourseDao;
 import team.tran.colleges.course.service.ICourseService;
-import team.tran.colleges.entity.Course;
-import team.tran.colleges.entity.RemarkInfo;
-import team.tran.colleges.entity.Suggest;
-import team.tran.colleges.hotdata.HotCourse;
 import team.tran.colleges.utils.DataUtil;
 import team.tran.colleges.utils.HotUtils;
 import team.tran.colleges.utils.Ranking;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
@@ -65,8 +59,19 @@ public class CourseServiceImpl implements ICourseService {
         data.forEach(item -> {
             item.put("time", DataUtil.dataTime(item.get("time").toString()));
         });
-        // 返回数据
-        return DataUtil.printf(0,  "获取成功", data,integer/size+1);
+        //判断redis里有没有该数据 没有的话添加
+        if(redisTemplate.opsForValue().get(msg+"_select")==null){
+            String s = JSON.toJSONString(data);
+            redisTemplate.opsForValue().set(msg+"_select",s);
+            return DataUtil.printf(0,"获取成功",data,integer/size+1);
+        }
+            //redis的key
+            String coid = msg + "_select";
+            //根据key查询
+            String s = redisTemplate.opsForValue().get(coid);
+            JSONArray objects = JSON.parseArray(s);
+            System.out.println(objects);
+            return DataUtil.printf(0,"获取成功",objects,integer/size+1);
     }
 
     /**
@@ -93,12 +98,13 @@ public class CourseServiceImpl implements ICourseService {
         List<JSONObject> list = new ArrayList();
         Map<String, Object> map = new HashMap<>();
         for (Map<String, Object> stringObjectMap : maps) {
+            //redis的key
             String coid = stringObjectMap.get("coid") + "_course";
-            System.out.println(coid);
+            //根据key查询
             String s = stringStringValueOperations.get(coid);
-            System.out.println(s);
+            //转json
             JSONObject jsonObject = JSON.parseObject(s);
-            System.out.println(jsonObject);
+            //添加
             list.add(jsonObject);
         }
         map.put("data", list);
@@ -145,7 +151,6 @@ public class CourseServiceImpl implements ICourseService {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
         String courseJson = operations.get(id + "_course");
         Object parse = JSONObject.parse(courseJson);
-
         // 没有查询到数据
         if (parse == null) {
             return DataUtil.printf(-2, "没有该课程信息");
