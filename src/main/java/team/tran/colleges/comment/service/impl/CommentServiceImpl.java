@@ -12,6 +12,7 @@ import team.tran.colleges.entity.RemarkInfo;
 import team.tran.colleges.entity.Student;
 import team.tran.colleges.entity.Suggest;
 import team.tran.colleges.entity.Teacher;
+import team.tran.colleges.mapper.RemarkInfoDao;
 import team.tran.colleges.mapper.StudentDao;
 import team.tran.colleges.mapper.TeacherDao;
 import team.tran.colleges.utils.*;
@@ -42,6 +43,9 @@ public class CommentServiceImpl implements ICommentService {
     @Autowired
     private TeacherDao teacherDao;
 
+    @Autowired
+    private RemarkInfoDao remarkInfoDao;
+
 
     /**
      * @param: token  学生的 token
@@ -66,10 +70,14 @@ public class CommentServiceImpl implements ICommentService {
         if (myId == null) {
             return DataUtil.printf(-1, "请重新登录");
         }
-        RemarkInfo remarkInfo = new RemarkInfo();
+        // 查询数据
+        QueryWrapper<RemarkInfo> query = new QueryWrapper<>();
+        query.eq("sid",myId);
+        query.eq("coid",id);
+        RemarkInfo select =remarkInfoDao.selectOne(query);
 
-        //判断星级
-        if (grade == 1) {
+        if (select==null){
+            RemarkInfo remarkInfo = new RemarkInfo();
             //课程点评的id
             remarkInfo.setRemarkInfoId(IDUtil.getID());
             //学生id
@@ -79,50 +87,21 @@ public class CommentServiceImpl implements ICommentService {
             //点评信息
             remarkInfo.setRemarkInfoText(text);
             //点评的等级
-            remarkInfo.setRemarkInfoMsg(1);
+            remarkInfo.setRemarkInfoMsg(grade);
             //点评时间
             remarkInfo.setCreateTime(System.currentTimeMillis() + "");
             //添加数据
             commentDao.insert(remarkInfo);
+            if (grade>2){
+                HotUtils.addCourse(Ranking.HOTCOURSE,id);
+            }
+
             return DataUtil.printf(0, "点评成功");
-        } else if (grade == 2) {
-            //课程点评的id
-            remarkInfo.setRemarkInfoId(IDUtil.getID());
-            //学生id
-            remarkInfo.setSid(myId);
-            //课程id
-            remarkInfo.setCoid(id);
-            //点评信息
-            remarkInfo.setRemarkInfoText(text);
-            //点评的等级
-            remarkInfo.setRemarkInfoMsg(2);
-            //点评时间
-            remarkInfo.setCreateTime(System.currentTimeMillis() + "");
-            //添加数据
-            System.out.println("-----------------");
-            System.err.println(myId);
-            commentDao.insert(remarkInfo);
-            return DataUtil.printf(0, "点评成功");
-        } else if (grade == 3) {
-            //课程点评的id
-            remarkInfo.setRemarkInfoId(IDUtil.getID());
-            //学生id
-            remarkInfo.setSid(myId);
-            //课程id
-            remarkInfo.setCoid(id);
-            //点评信息
-            remarkInfo.setRemarkInfoText(text);
-            //点评的等级
-            remarkInfo.setRemarkInfoMsg(3);
-            //添加到reids数据库里
-            HotUtils.addCourse(Ranking.HOTCOURSE.getName(),id);
-            //点评时间
-            remarkInfo.setCreateTime(System.currentTimeMillis() + "");
-            //添加数据
-            commentDao.insert(remarkInfo);
-            return DataUtil.printf(0, "点评成功");
-        } else
-            return DataUtil.printf(-1, "请选择正确的等级");
+        }else {
+            return DataUtil.printf(-1,"你已经点评过了");
+        }
+
+
 
     }
 

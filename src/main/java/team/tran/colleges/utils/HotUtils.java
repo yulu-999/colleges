@@ -1,14 +1,17 @@
 package team.tran.colleges.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
+import team.tran.colleges.entity.RemarkInfo;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @className: HotUtils
@@ -32,8 +35,8 @@ public class HotUtils {
      * @author: tran
      * @date: 2021/6/1
      */
-    public static void addCourse(String name ,String  key){
-        redisTemplate.opsForZSet().incrementScore(name,key,1);
+    public static void addCourse(Ranking name,String  key){
+        redisTemplate.opsForZSet().incrementScore(name.getName(),key,1);
 
     }
 
@@ -45,9 +48,21 @@ public class HotUtils {
      * @author: tran
      * @date: 2021/6/1
      */
-    public static  List<Map<String, Object>> selectCourseHot(String page,String size){
-        return  null;
+    public static  List<Map<String, Object>> selectCourseHot(){
+        List<Map<String,Object>> rank = new ArrayList<>();
+        //只取前十条
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = redisTemplate.opsForZSet().reverseRangeByScoreWithScores(Ranking.HOTCOURSE.getName(), 0, 99999, 0, 8);
+        int index = 0;
+        //循环遍历
+        for(ZSetOperations.TypedTuple typle:typedTuples){
+            Map<String, Object> userRankMap = new HashMap<>();
+            userRankMap.put("coid",typle.getValue());
+            userRankMap.put("count",typle.getScore().intValue());
+            userRankMap.put("rank",++index);
+            String userInfo = redisTemplate.opsForValue().get(Ranking.HOTCOURSE.getName()+ "_" + typle.getValue());
+            rank.add(userRankMap);
+        }
+        return rank;
     }
-
 
 }

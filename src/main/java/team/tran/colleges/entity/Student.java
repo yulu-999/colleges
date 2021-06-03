@@ -23,7 +23,7 @@ public class Student {
     //  学生登录密码
     private String  password;
     //  学生班级id
-    private String  coid;
+    private String  cid;
     //  学校名称
     private String  school;
     //  token

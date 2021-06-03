@@ -1,14 +1,25 @@
 package team.tran.colleges.course.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Tuple;
 import team.tran.colleges.course.dao.CourseDao;
 import team.tran.colleges.course.service.ICourseService;
 import team.tran.colleges.entity.Course;
+import team.tran.colleges.entity.RemarkInfo;
+import team.tran.colleges.hotdata.HotCourse;
 import team.tran.colleges.utils.DataUtil;
+import team.tran.colleges.utils.HotUtils;
+import team.tran.colleges.utils.Ranking;
 
-import java.util.List;
-import java.util.Map;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 /**
  * @className: CourseServiceImpl
@@ -16,12 +27,18 @@ import java.util.Map;
  * @author: tran
  * @date: 2021/5/31
  **/
-@Service
+@Service("CourServiceImpl")
 public class CourseServiceImpl implements ICourseService {
 
 
     @Autowired
     private CourseDao courseDao;
+
+    @Autowired
+    private  RedisTemplate<String, String> redisTemplate;
+
+
+
 
 
     /**
@@ -51,14 +68,35 @@ public class CourseServiceImpl implements ICourseService {
     /**
      * @param: page
      * @param: size
-     * @description: TODO 课程热榜
+     * @description: TODO 精品推荐
      * @return: java.util.Map<java.lang.String,java.lang.Object>
      * @author: tran
      * @date: 2021/6/1
      */
     @Override
     public Map<String, Object> selectCourse(Integer page, Integer size) {
-        return null;
+
+        // 页数修改
+        DataUtil.updatePage(page,size);
+        // 修改page
+        page = (page-1)*size;
+        List<Map<String, Object>> data = HotUtils.selectCourseHot();
+        System.out.println("这是排序了的数据"+data);
+        ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
+        List<JSONObject> list=new ArrayList();
+        Map<String ,Object> map=new HashMap<>();
+        for (Map<String, Object> datum : data) {
+            String coid = datum.get("coid")+"_course";
+            System.out.println(coid);
+            String s = stringStringValueOperations.get(coid);
+            System.out.println(s);
+            JSONObject jsonObject = JSON.parseObject(s);
+            System.out.println(jsonObject);
+            list.add(jsonObject);
+        }
+        map.put("data",list);
+        // 返回数据
+        return DataUtil.printf(0,data.size(),"获取成功",map);
     }
 
     /**

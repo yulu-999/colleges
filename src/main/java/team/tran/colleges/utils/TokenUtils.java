@@ -21,12 +21,11 @@ public class TokenUtils {
 
 
 
-
-
     private static RedisTemplate<String, String> redisTemplate;
 
     @Autowired
     public TokenUtils(RedisTemplate<String, String> redisTemplate){
+
         this.redisTemplate=redisTemplate;
     }
 

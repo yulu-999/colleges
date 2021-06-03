@@ -49,7 +49,28 @@ public class SuggestController {
         return suggestService.replaySuggest(token,con,id,sid);
     }
 
+    /**
+     * @param: token 学生 token
+     * @param: state 状态
+     * @description: TODO 根据状态获取提出的建议
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @author: tran
+     * @date: 2021/6/1
+     */
+    @RequestMapping("/course/set")
+    Map<String ,Object> getSuggestByState(@RequestHeader("token")String token,Integer state,Integer page,Integer size){
+        return suggestService.getSuggestByState(token,state,page,size);
+    }
 
-
-
+    /**
+     * @param: token 教师 token
+     * @param: state 是否回复
+     * @description: TODO 获取课程 state ：1-已经回复 0-没有回复
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @author: tran
+     * @date: 2021/6/1
+     */
+    Map<String ,Object> getTeaSuggestByState(String token,Integer state,Integer page,Integer size){
+        return suggestService.getTeaSuggestByState(token,state,page,size);
+    }
 }

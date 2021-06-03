@@ -1,6 +1,8 @@
 package team.tran.colleges.course.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -26,7 +28,7 @@ public interface CourseDao extends BaseMapper<Course> {
      * @date: 2021/6/1
      */
     @Select("SELECT course.coid as id,course.coname as coName ,teacher.tname as tName ,course.creatTime as time FROM course LEFT JOIN teacher on course.tid=teacher.tid WHERE course.coname LIKE '%${msg}%' or course.tid in (SELECT tid FROM teacher WHERE teacher.tname LIKE '%${msg}%' ) LIMIT #{page},#{size}")
-    List<Map<String, Object>> selectCourseByMsg(@Param("page") Integer page ,@Param("size") Integer size ,@Param("msg") String msg);
+    List<Map<String, Object>> selectCourseByMsg(@Param("page") Integer page , @Param("size") Integer size , @Param("msg") String msg);
 
 
     /**
@@ -39,4 +41,16 @@ public interface CourseDao extends BaseMapper<Course> {
      */
     @Select("SELECT course.coid as id,course.coname as coName ,teacher.tname as tName ,course.creatTime as time FROM course LEFT JOIN teacher on course.tid=teacher.tid RDER BY course.coid DESC  LIMIT #{page},#{size}")
     List<Map<String, Object>> selectCourse(Integer page, Integer size);
+
+
+    @Select("\n" +
+            "SELECT\n" +
+            "\tcourse.coid AS id,\n" +
+            "\tcourse.coname AS coname,\n" +
+            "\tteacher.tname AS tname,\n" +
+            "\tcourse.creatTime AS time\n" +
+            "FROM\n" +
+            "\tcourse\n" +
+            "LEFT JOIN teacher ON course.tid = teacher.tid")
+    List<Map<String,Object>> selectCouserAndTeacher();
 }
