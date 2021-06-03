@@ -101,19 +101,13 @@ public class CommentServiceImpl implements ICommentService {
             remarkInfo.setCreateTime(System.currentTimeMillis() + "");
             //添加数据
             commentDao.insert(remarkInfo);
-            //
-            RemarkInfoMongodb remarkInfoMongodb=new RemarkInfoMongodb();
-            List<Map<String, Object>> maps = remarkInfoMongobdDao.selectMonodb();
             //添加到mongodb里面
-            RemarkInfo insert = mongoTemplate.insert(remarkInfo);
-//            List<RemarkInfo> list=new ArrayList<>();
-//            list.add(insert);
-//            Map<String,Object> map=new HashMap<>();
-//            map.put("list",list);
+
+
             if (grade>2){
                 HotUtils.addCourse(Ranking.HOTCOURSE,id);
             }
-            return DataUtil.printf(0, "点评成功",maps);
+            return DataUtil.printf(0, "点评成功");
         }else {
             return DataUtil.printf(-1,"你已经点评过了");
         }
