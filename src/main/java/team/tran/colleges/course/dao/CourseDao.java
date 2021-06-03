@@ -53,4 +53,7 @@ public interface CourseDao extends BaseMapper<Course> {
             "\tcourse\n" +
             "LEFT JOIN teacher ON course.tid = teacher.tid")
     List<Map<String,Object>> selectCouserAndTeacher();
+
+    @Select("SELECT * from course")
+    List<Map<String, Object>> selectCourseAll();
 }

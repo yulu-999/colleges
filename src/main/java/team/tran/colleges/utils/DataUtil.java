@@ -40,6 +40,11 @@ public final class DataUtil {
         return map;
     }
 
+    public static Map<String,Object> printf(Integer code, String msg,Object data,Integer pages){
+        Map<String, Object> map = printf(code, msg, data);
+        map.put("pages",pages);
+        return map;
+    }
     public static Map<String,Object> printf(Integer code,Integer count, String msg,Object data){
         Map<String, Object> map = printf(code, msg, data);
         map.put("count",count);
@@ -64,7 +69,6 @@ public final class DataUtil {
     public static  String dataTime(String data){
         return  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Long.parseLong(data));
     }
-
 
 
 

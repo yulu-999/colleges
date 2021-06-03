@@ -70,7 +70,9 @@ public class SuggestController {
      * @author: tran
      * @date: 2021/6/1
      */
-    Map<String ,Object> getTeaSuggestByState(String token,Integer state,Integer page,Integer size){
+    @RequestMapping("/course/state")
+    Map<String ,Object> getTeaSuggestByState(@RequestHeader("token")String token,Integer state,Integer page,Integer size){
         return suggestService.getTeaSuggestByState(token,state,page,size);
     }
+
 }

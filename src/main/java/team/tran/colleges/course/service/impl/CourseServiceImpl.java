@@ -2,6 +2,7 @@ package team.tran.colleges.course.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -13,6 +14,7 @@ import team.tran.colleges.course.dao.CourseDao;
 import team.tran.colleges.course.service.ICourseService;
 import team.tran.colleges.entity.Course;
 import team.tran.colleges.entity.RemarkInfo;
+import team.tran.colleges.entity.Suggest;
 import team.tran.colleges.hotdata.HotCourse;
 import team.tran.colleges.utils.DataUtil;
 import team.tran.colleges.utils.HotUtils;
@@ -62,7 +64,7 @@ public class CourseServiceImpl implements ICourseService {
             item.put("time", DataUtil.dataTime(item.get("time").toString()));
         });
         // 返回数据
-        return DataUtil.printf(0, data.size(), "获取成功", data);
+        return DataUtil.printf(0,  "获取成功", data,data.size()/size);
     }
 
     /**
@@ -75,18 +77,21 @@ public class CourseServiceImpl implements ICourseService {
      */
     @Override
     public Map<String, Object> selectCourse(Integer page, Integer size) {
-
-        // 页数修改
-        DataUtil.updatePage(page, size);
+        // 验证参数
+        if (page == null || page == 0)
+            page = 1;
+        if (size == null)
+            size = 20;
         // 修改page
         page = (page - 1) * size;
-        List<Map<String, Object>> data = HotUtils.selectCourseHot();
-        System.out.println("这是排序了的数据" + data);
+        //获取精品
+        List<Map<String, Object>> maps = HotUtils.selectCourseHot();
+        System.out.println("这是排序了的数据" + maps);
         ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
         List<JSONObject> list = new ArrayList();
         Map<String, Object> map = new HashMap<>();
-        for (Map<String, Object> datum : data) {
-            String coid = datum.get("coid") + "_course";
+        for (Map<String, Object> stringObjectMap : maps) {
+            String coid = stringObjectMap.get("coid") + "_course";
             System.out.println(coid);
             String s = stringStringValueOperations.get(coid);
             System.out.println(s);
@@ -96,7 +101,7 @@ public class CourseServiceImpl implements ICourseService {
         }
         map.put("data", list);
         // 返回数据
-        return DataUtil.printf(0, data.size(), "获取成功", map);
+        return DataUtil.printf(0, maps.size(), "获取成功", map);
     }
 
     /**
@@ -133,13 +138,54 @@ public class CourseServiceImpl implements ICourseService {
         // 验证参数
         if (id == null || id.equals(""))
             return DataUtil.printf(-5, "参数错误");
-        // 查询数据
-        Course course = courseDao.selectById(id);
+        QueryWrapper<Course> query = new QueryWrapper<>();
+        query.eq("coid", id);
+        List<Course> list = courseDao.selectList(query);
+
         // 没有查询到数据
-        if (course == null)
+        if (list == null) {
             return DataUtil.printf(-2, "没有该课程信息");
-        else
-            return DataUtil.printf(0, "获取成功", course);
+
+        }
+        else {
+            //添加到redis里
+            HotUtils.addCourse(Ranking.BOUTIQUE, id);
+            return DataUtil.printf(0, "获取成功", list);
+        }
+
     }
 
+    /**
+     * 热榜
+     * @param page 页数
+     * @param size 条数
+     * @return
+     */
+    @Override
+    public Map<String, Object> selectCourseHot(Integer page, Integer size) {
+        // 验证参数
+        if (page == null || page == 0)
+            page = 1;
+        if (size == null)
+            size = 20;
+        // 修改page
+        page = (page - 1) * size;
+        List<Map<String, Object>> data = HotUtils.selectCourseHot();
+        System.out.println("这是排序了的数据" + data);
+        ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
+        List<JSONObject> list = new ArrayList();
+        Map<String, Object> map = new HashMap<>();
+        for (Map<String, Object> datum : data) {
+            String coid = datum.get("coid") + "_course";
+            System.out.println(coid);
+            String s = stringStringValueOperations.get(coid);
+            System.out.println(s);
+            JSONObject jsonObject = JSON.parseObject(s);
+            System.out.println(jsonObject);
+            list.add(jsonObject);
+        }
+        map.put("data", list);
+        // 返回数据
+        return DataUtil.printf(0, data.size(), "获取成功", map);
+    }
 }

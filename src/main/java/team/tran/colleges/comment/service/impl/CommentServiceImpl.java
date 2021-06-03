@@ -95,7 +95,6 @@ public class CommentServiceImpl implements ICommentService {
             if (grade>2){
                 HotUtils.addCourse(Ranking.HOTCOURSE,id);
             }
-
             return DataUtil.printf(0, "点评成功");
         }else {
             return DataUtil.printf(-1,"你已经点评过了");

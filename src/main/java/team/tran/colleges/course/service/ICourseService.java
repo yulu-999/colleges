@@ -51,7 +51,13 @@ public interface ICourseService {
 
 
 
-
+    /**
+     * 热榜
+     * @param page 页数
+     * @param size 条数
+     * @return Map
+     */
+    Map<String ,Object> selectCourseHot(Integer page,Integer size);
 
 
 

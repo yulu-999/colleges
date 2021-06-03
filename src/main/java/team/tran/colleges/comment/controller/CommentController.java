@@ -37,7 +37,14 @@ public class CommentController {
     Map<String,Object> stuRemark(@RequestHeader("token") String token, String id, Integer grade, String text){
         return commentService.stuRemark(token,id,grade,text);
     }
-
+    /**
+     * @param: token
+     * @param: id
+     * @description: TODO 对点评进行删除 只能删除自己的
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
+     * @author: tran
+     * @date: 2021/6/1
+     */
     @RequestMapping("/comment/del")
     Map<String ,Object> delRemark(@RequestHeader("token")String token,String id){
         return commentService.delRemark(token,id);
