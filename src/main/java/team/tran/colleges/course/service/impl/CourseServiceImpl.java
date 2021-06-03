@@ -59,12 +59,14 @@ public class CourseServiceImpl implements ICourseService {
         page = (page - 1) * size;
         // 模糊查询
         List<Map<String, Object>> data = courseDao.selectCourseByMsg(page, size, msg);
+        Integer integer = courseDao.selectCount(null);
+
         //类型转换
         data.forEach(item -> {
             item.put("time", DataUtil.dataTime(item.get("time").toString()));
         });
         // 返回数据
-        return DataUtil.printf(0,  "获取成功", data,data.size()/size);
+        return DataUtil.printf(0,  "获取成功", data,integer/size+1);
     }
 
     /**
