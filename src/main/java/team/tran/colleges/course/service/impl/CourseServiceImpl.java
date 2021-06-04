@@ -1,6 +1,7 @@
 package team.tran.colleges.course.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,18 +56,24 @@ public class CourseServiceImpl implements ICourseService {
         if (page == null || page == 0)
             page = 1;
         if (size == null)
-            size = 20;
+            size = 8;
         page = (page - 1) * size;
         // 模糊查询
         List<Map<String, Object>> data = courseDao.selectCourseByMsg(page, size, msg);
         Integer integer = courseDao.selectCount(null);
-
-        //类型转换
-        data.forEach(item -> {
-            item.put("time", DataUtil.dataTime(item.get("time").toString()));
-        });
-        // 返回数据
-        return DataUtil.printf(0,  "获取成功", data,integer/size+1);
+        //判断redis里有没有该数据 没有的话添加
+        if(redisTemplate.opsForValue().get(msg+"_select")==null){
+            String s = JSON.toJSONString(data);
+            redisTemplate.opsForValue().set(msg+"_select",s);
+            return DataUtil.printf(0,"获取成功",data,integer/size+1);
+        }
+        //redis的key
+        String coid = msg + "_select";
+        //根据key查询
+        String s = redisTemplate.opsForValue().get(coid);
+        JSONArray objects = JSON.parseArray(s);
+        System.out.println(objects);
+        return DataUtil.printf(0,"获取成功",objects,integer/size+1);
     }
 
     /**
