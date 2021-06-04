@@ -83,7 +83,7 @@ public class CourseServiceImpl implements ICourseService {
         if (page == null || page == 0)
             page = 1;
         if (size == null)
-            size = 20;
+            size = 8;
         // 修改page
         page = (page - 1) * size;
         //获取精品
@@ -91,19 +91,14 @@ public class CourseServiceImpl implements ICourseService {
         System.out.println("这是排序了的数据" + maps);
         ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
         List<JSONObject> list = new ArrayList();
-        Map<String, Object> map = new HashMap<>();
         for (Map<String, Object> stringObjectMap : maps) {
             String coid = stringObjectMap.get("coid") + "_course";
-            System.out.println(coid);
             String s = stringStringValueOperations.get(coid);
-            System.out.println(s);
             JSONObject jsonObject = JSON.parseObject(s);
-            System.out.println(jsonObject);
             list.add(jsonObject);
         }
-        map.put("data", list);
         // 返回数据
-        return DataUtil.printf(0, maps.size(), "获取成功", map);
+        return DataUtil.printf(0,"获取成功", list,maps.size()/size+1);
     }
 
     /**
@@ -177,19 +172,14 @@ public class CourseServiceImpl implements ICourseService {
         System.out.println("这是排序了的数据" + data);
         ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
         List<JSONObject> list = new ArrayList();
-        Map<String, Object> map = new HashMap<>();
         for (Map<String, Object> datum : data) {
             String coid = datum.get("coid") + "_course";
-            System.out.println(coid);
             String s = stringStringValueOperations.get(coid);
-            System.out.println(s);
             JSONObject jsonObject = JSON.parseObject(s);
-            System.out.println(jsonObject);
             list.add(jsonObject);
         }
-        map.put("data", list);
-        // 返回数据
 
-        return DataUtil.printf(0, data.size(), "获取成功", map);
+        // 返回数据
+        return DataUtil.printf(0,"获取成功", list,data.size()/size+1);
     }
 }
