@@ -66,6 +66,8 @@ public class CommentServiceImpl implements ICommentService {
      */
     @Override
     public Map<String, Object> stuRemark(String token, String id, Integer grade, String text) {
+        System.out.println("这是课程id"+id);
+
         //1.验证参数
         if (token == null || token.equals("")) {
             return DataUtil.printf(-1, "参数为空");
@@ -83,6 +85,7 @@ public class CommentServiceImpl implements ICommentService {
         query.eq("sid",myId);
         query.eq("coid",id);
         RemarkInfo select =remarkInfoDao.selectOne(query);
+        System.out.println(select);
         if (select==null){
             String rid = IDUtil.getID();
             RemarkInfo remarkInfo = new RemarkInfo();
@@ -123,7 +126,7 @@ public class CommentServiceImpl implements ICommentService {
             commentDao.insert(remarkInfo);
             //判断如果星级大于2的话给他加入精品榜
             if (grade>2){
-                HotUtils.addCourse(Ranking.BOUTIQUE,id);
+                HotUtils.addCourse(Ranking.HOTCOURSE,id);
             }
             return DataUtil.printf(0, "点评成功");
         }else {

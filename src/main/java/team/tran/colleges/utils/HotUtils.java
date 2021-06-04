@@ -77,7 +77,7 @@ public class HotUtils {
             userRankMap.put("coid",typle.getValue());
             userRankMap.put("count",typle.getScore().intValue());
             userRankMap.put("rank",++index);
-            String userInfo = redisTemplate.opsForValue().get(Ranking.HOTCOURSE.getName()+ "_" + typle.getValue());
+            String userInfo = redisTemplate.opsForValue().get(Ranking.BOUTIQUE.getName()+ "_" + typle.getValue());
             rank.add(userRankMap);
         }
         return rank;
