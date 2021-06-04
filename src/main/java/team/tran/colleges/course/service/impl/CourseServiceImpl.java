@@ -165,7 +165,7 @@ public class CourseServiceImpl implements ICourseService {
         if (page == null || page == 0)
             page = 1;
         if (size == null)
-            size = 20;
+            size = 8;
         // 修改page
         page = (page - 1) * size;
         List<Map<String, Object>> data = HotUtils.selectCourseHot();
