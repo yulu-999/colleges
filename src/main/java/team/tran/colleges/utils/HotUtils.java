@@ -65,4 +65,22 @@ public class HotUtils {
         return rank;
     }
 
+
+    public static  List<Map<String, Object>> selectCourseHotBoutique(){
+        List<Map<String,Object>> rank = new ArrayList<>();
+        //只取前十条
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = redisTemplate.opsForZSet().reverseRangeByScoreWithScores(Ranking.BOUTIQUE.getName(), 0, 99999, 0, 8);
+        int index = 0;
+        //循环遍历
+        for(ZSetOperations.TypedTuple typle:typedTuples){
+            Map<String, Object> userRankMap = new HashMap<>();
+            userRankMap.put("coid",typle.getValue());
+            userRankMap.put("count",typle.getScore().intValue());
+            userRankMap.put("rank",++index);
+            String userInfo = redisTemplate.opsForValue().get(Ranking.HOTCOURSE.getName()+ "_" + typle.getValue());
+            rank.add(userRankMap);
+        }
+        return rank;
+    }
+
 }

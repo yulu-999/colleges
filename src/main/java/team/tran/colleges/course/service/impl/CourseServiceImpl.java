@@ -87,7 +87,7 @@ public class CourseServiceImpl implements ICourseService {
         // 修改page
         page = (page - 1) * size;
         //获取精品
-        List<Map<String, Object>> maps = HotUtils.selectCourseHot();
+        List<Map<String, Object>> maps = HotUtils.selectCourseHotBoutique();
         System.out.println("这是排序了的数据" + maps);
         ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
         List<JSONObject> list = new ArrayList();

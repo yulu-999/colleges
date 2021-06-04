@@ -123,7 +123,7 @@ public class CommentServiceImpl implements ICommentService {
             commentDao.insert(remarkInfo);
             //判断如果星级大于2的话给他加入精品榜
             if (grade>2){
-                HotUtils.addCourse(Ranking.HOTCOURSE,id);
+                HotUtils.addCourse(Ranking.BOUTIQUE,id);
             }
             return DataUtil.printf(0, "点评成功");
         }else {
